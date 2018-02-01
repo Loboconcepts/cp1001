@@ -85,23 +85,28 @@
         <p class="lead">Enter your birthday and your significant other's birthday to discover your color.</p>
         <div class="row">
           <!-- Birthday one -->
-          
-          <div class="col-sm-4 col-sm-offset-2" id="birthdayOneColor">
+          <div class="col-sm-4 col-sm-offset-2">
             <div class="form-control-static">
-              <label>First Birthday</label>
+              <label id="fistLabel">First Birthday</label>
               <input type="date" class="form-control" id="birthdayOne" placeholder="Date of Birth">
+            </div>
+            <div style="width:100px; height:100px;" class="bg-color" data-bg-color-hex="#ffffff" data-bg-color-rgb="255,255,255">
             </div>
           </div>
           <!-- Birthday two -->
-          <div class="col-sm-4" id="birthdayTwoColor">
+          <div class="col-sm-4">
             <div class="form-control-static">
               <label>Second Birthday</label>
               <input type="date" class="form-control" id="birthdayTwo" placeholder="Date of Birth">
             </div>
+            <div style="width:100px; height:100px;" class="bg-color" data-bg-color-hex="#ffffff" data-bg-color-rgb="255,255,255">
+            </div>
           </div>
         </div>
-        <div class="col-sm-4 col-sm-offset-4 text-center" id="birthdayThreeColor">
-          <button class="btn btn-info" id="submitButton">Blend</button>
+        <div class="row">
+          <div class="col col-sm-4 col-sm-offset-4 text-center" id="birthdayThreeColor">
+            <button class="btn btn-info" id="submitButton">Blend</button>
+          </div>
         </div>
       </div>
     </div>
@@ -110,68 +115,75 @@
         <span class="text-muted">&copy; 2018</span>
       </div>
     </footer>
-    <!-- /.container -->
-    <!-- Optional JavaScript -->
+    <!-- Begin custom Javascript -->
     <script type="text/javascript">
-      var colorOne = "#ffffff";
-      var colorTwo = "#ffffff";
-      var colorThree = "#ffffff";
-      var percentage = 0.5;
-      var color1 = "ffffff";
-      var color2 = "ffffff";
+
+
+      function blendColors() {
+        var myEls = document.querySelectorAll(".bg-color");
+        var colors = [];
+        for (var i = 0; i<myEls.length; i++) {
+          var el = myEls[i];
+          colors.push(el.dataset.bgColorRgb.split(","));
+
+        }
+        var color3 = [ 
+            (.5) * colors[0][0] + (.5) * colors[1][0], 
+            (.5) * colors[0][1] + (.5) * colors[1][1], 
+            (.5) * colors[0][2] + (.5) * colors[1][2]
+        ];
+        document.getElementById("birthdayThreeColor").style.backgroundColor = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
+      }
 
       function int_to_hex(num) {
-          var hex = Math.round(num).toString(16);
-          if (hex.length == 1)
-              hex = '0' + hex;
-          return hex;
+        var hex = Math.round(num).toString(16);
+        if (hex.length == 1)
+            hex = '0' + hex;
+        return hex;
       }
 
-      document.getElementById("submitButton").onclick = function() {
-        var color1up = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
-        var color2up = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
+      // function step 1--
 
-        // blend
-        var color3 = [ 
-            (1 - percentage) * color1up[0] + percentage * color2up[0], 
-            (1 - percentage) * color1up[1] + percentage * color2up[1], 
-            (1 - percentage) * color1up[2] + percentage * color2up[2]
-        ];
-
-
-        // convert to hex
-        color3 = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
-        colorThree = color3;
-
-        console.log(color3);
-
-        // return hex
-        return document.getElementById("birthdayThreeColor").style.backgroundColor = colorThree;
+      function callThisFunctionOnChange(ev) {
+        var sibling = ev.target.parentElement.nextElementSibling;
+        setColorsMain(sibling, ev.target.value);
       }
 
-      document.getElementById("birthdayOne").onchange = function() {
-        var bdayOne = new Date(document.getElementById("birthdayOne").value);
-        var arrOne = parseInt((bdayOne.getMonth() + 1) + "" + (bdayOne.getDate() + 1) + "" + bdayOne.getFullYear(), 10);
-        colorOne = "#" + arrOne.toString(16);
-        color1 = arrOne.toString(16);
-        return document.getElementById("birthdayOneColor").style.backgroundColor = colorOne;
+      // to here 2 --
+
+      function setColorsMain(el, value) {
+        var hex = getColorHexFromString(value);
+        el.style.backgroundColor = hex;
+
+        el.dataset.bgColorHex = hex;
+        el.dataset.bgColorRgb = getRgbFromHex(el.dataset.bgColorHex).join(",");
       }
 
-      document.getElementById("birthdayTwo").onchange = function() {
-        var bdayTwo = new Date(document.getElementById("birthdayTwo").value);
-        var arrTwo = parseInt((bdayTwo.getMonth() + 1) + "" + (bdayTwo.getDate() + 1) + "" + bdayTwo.getFullYear(), 10);
-        colorTwo = "#" + arrTwo.toString(16);
-        color2 = arrTwo.toString(16);
-        return document.getElementById("birthdayTwoColor").style.backgroundColor = colorTwo;
+      // to here 3 These separate the colors --
+
+      function getColorHexFromString(val) {
+        var tuples = val.split("-");
+        var arr = parseInt(tuples[1] + "" + tuples[2] + "" + tuples[0], 10) ;
+        return "#" + arr.toString(16);
       }
+
+      // this separates colors too
+
+      function getRgbFromHex(val) {
+        var colorNoHex = val.replace("#","");
+        return [parseInt(colorNoHex[0] + colorNoHex[1], 16), parseInt(colorNoHex[2] + colorNoHex[3], 16), parseInt(colorNoHex[4] + colorNoHex[5], 16)];
+      }
+
+      // Event listeners
+      document.getElementById("birthdayOne").onchange = callThisFunctionOnChange;
+      document.getElementById("birthdayTwo").onchange = callThisFunctionOnChange;
+      document.getElementById("submitButton").onclick = blendColors;
+
+
       
       
       
       
-      
-      
-      document.getElementById("birthdayOneColor").style.backgroundColor = colorOne;
-      document.getElementById("birthdayTwoColor").style.backgroundColor = colorTwo;
       
       
     </script>
