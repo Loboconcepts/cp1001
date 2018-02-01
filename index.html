@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <title>Your Color</title>
+    <style type="text/css">
+      body {
+      padding-top: 50px;
+      }
+      .navbar {
+      background-color: #ff0000; 
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Your Color</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container">
+      <div class="text-center">
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        <div class="row">
+          <!-- Birthday one -->
+          <div class="col-md-6" id="birthdayOneColor">
+            <div class="form-control-static">
+              <label>First Birthday</label>
+              <input type="date" class="form-control" id="birthdayOne" placeholder="Date of Birth">
+            </div>
+          </div>
+          <!-- Birthday two -->
+          <div class="col-md-6" id="birthdayTwoColor">
+            <div class="form-control-static">
+              <label>Second Birthday</label>
+              <input type="date" class="form-control" id="birthdayTwo" placeholder="Date of Birth">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-sm-offset-3 text-center" id="coupleColor">
+          <button class="btn btn-primary" id="submitButton">Submit</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.container -->
+    <!-- Optional JavaScript -->
+    <script type="text/javascript">
+      var colorOne = "#ffffff";
+      var colorTwo = "#ffffff";
+      var percentage = 0.5;
+      var color1 = "ffffff";
+      var color2 = "ffffff";
+
+      function int_to_hex(num) {
+          var hex = Math.round(num).toString(16);
+          if (hex.length == 1)
+              hex = '0' + hex;
+          return hex;
+      }
+
+      document.getElementById("submitButton").onclick = function() {
+        color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
+        color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
+
+        console.log('hex -> rgba: c1 => [' + color1.join(', ') + '], c2 => [' + color2.join(', ') + ']');
+
+        // 4: blend
+        var color3 = [ 
+            (1 - percentage) * color1[0] + percentage * color2[0], 
+            (1 - percentage) * color1[1] + percentage * color2[1], 
+            (1 - percentage) * color1[2] + percentage * color2[2]
+        ];
+
+        console.log('c3 => [' + color3.join(', ') + ']');
+
+        // 5: convert to hex
+        color3 = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
+
+        console.log(color3);
+
+
+        // return hex
+        return document.getElementById("coupleColor").style.backgroundColor = color3;
+      }
+
+      document.getElementById("birthdayOne").onchange = function() {
+        var bdayOne = new Date(document.getElementById("birthdayOne").value);
+        var arrOne = parseInt((bdayOne.getMonth() + 1) + "" + (bdayOne.getDate() + 1) + "" + bdayOne.getFullYear(), 10);
+        colorOne = "#" + arrOne.toString(16);
+        color1 = arrOne.toString(16);
+        document.getElementById("birthdayOneColor").style.backgroundColor = colorOne;
+      }
+
+      document.getElementById("birthdayTwo").onchange = function() {
+        var bdayTwo = new Date(document.getElementById("birthdayTwo").value);
+        var arrTwo = parseInt((bdayTwo.getMonth() + 1) + "" + (bdayTwo.getDate() + 1) + "" + bdayTwo.getFullYear(), 10);
+        colorTwo = "#" + arrTwo.toString(16);
+        color2 = arrTwo.toString(16);
+        document.getElementById("birthdayTwoColor").style.backgroundColor = colorTwo;
+      }
+      
+      
+      
+      
+      
+      
+      document.getElementById("birthdayOneColor").style.backgroundColor = colorOne;
+      document.getElementById("birthdayTwoColor").style.backgroundColor = colorTwo;
+      
+      
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
