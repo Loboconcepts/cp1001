@@ -84,6 +84,7 @@
       <div class="text-center">
         <h1>Discover your color!</h1>
         <p class="lead">Enter your birthday and your significant other's birthday to discover your color.</p>
+        <input class="h5" type="checkbox" id="radioButton"> Augmented formulaically*
         <div class="row">
           <!-- Birthday one -->
           <div class="col-sm-4 col-sm-offset-2 bg-color" data-bg-color-hex="#ffffff" data-bg-color-rgb="255,255,255">
@@ -115,6 +116,9 @@
           <div class="col-sm-2 col-xs-4 h1">
             <i class="fas fa-user" id="personTwo" style="color:#ffffff; font-size:2em;"></i>
           </div>
+        </div>
+        <div class="row text-left" style="padding-top:10px;font-size:10px;" id="colorInfo">
+          *The month is multiplied to allow for a wider range of colors. 
         </div>
       </div>
     </div>
@@ -148,9 +152,17 @@
             (.5) * colorsRgb[0][1] + (.5) * colorsRgb[1][1], 
             (.5) * colorsRgb[0][2] + (.5) * colorsRgb[1][2]
         ];
-        document.getElementById("heart").style.color = '#' + RgbBackToHex(colorsBlendedRgb[0]) + RgbBackToHex(colorsBlendedRgb[1]) + RgbBackToHex(colorsBlendedRgb[2]);
+
+        var blendedColorsHex = '#' + RgbBackToHex(colorsBlendedRgb[0]) + RgbBackToHex(colorsBlendedRgb[1]) + RgbBackToHex(colorsBlendedRgb[2]);
+
+
+        document.getElementById("heart").style.color = blendedColorsHex;
         document.getElementById("personOne").style.color = colorsHex[0];
         document.getElementById("personTwo").style.color = colorsHex[1];
+
+        document.getElementById("colorInfo").firstChild.nextElementSibling.innerHTML = colorsHex[0] + "<br>" + document.getElementById("personOne").style.color;
+        document.getElementById("colorInfo").firstChild.nextElementSibling.nextElementSibling.innerHTML = blendedColorsHex + "<br>" + document.getElementById("heart").style.color;
+        document.getElementById("colorInfo").firstChild.nextElementSibling.nextElementSibling.nextElementSibling.innerHTML = colorsHex[1] + "<br>" + document.getElementById("personTwo").style.color;
 
       }
 
@@ -164,7 +176,6 @@
       // function step 1--
 
       function callThisFunctionOnChange(ev) {
-        console.log((ev.target.value).split("-"));
         var el = ev.target.parentElement.parentElement;
         setColorsMain(el, ev.target.value);
       }
@@ -182,7 +193,13 @@
 
       function getColorHexFromString(val) {
         var tuples = val.split("-");
-        var arr = parseInt(tuples[1] + "" + tuples[2] + "" + tuples[0], 10) ;
+        if (document.getElementById("radioButton").checked) {
+          var monthAugmented = Math.floor(tuples[1] * 1.359);
+          var arr = parseInt(monthAugmented + "" + tuples[2] + "" + tuples[0], 10);
+        }
+        else {
+          var arr = parseInt(tuples[1] + "" + tuples[2] + "" + tuples[0], 10);
+        }
         return "#" + arr.toString(16);
       }
 
